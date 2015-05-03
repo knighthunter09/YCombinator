@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:transitionGroup="false"
+    android:touchscreenBlocksFocus="true"
+    android:visibility="visible"
+    android:theme="@style/Base.AlertDialog.AppCompat.Light"
+    android:layoutMode="opticalBounds"
+    android:gravity="fill_horizontal|center_vertical|center">
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:linksClickable="false"
+        android:minHeight="25dp"
+        android:outlineProvider="background" />
+</RelativeLayout>
