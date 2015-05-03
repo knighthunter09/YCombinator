@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/row_details">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:transitionGroup="false"
+    android:touchscreenBlocksFocus="true"
+    android:visibility="visible"
+    android:theme="@style/Base.AlertDialog.AppCompat.Light"
+    android:layoutMode="opticalBounds"
+    android:gravity="fill_horizontal|center_vertical|center"
+    android:background="@android:color/holo_red_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:linksClickable="false"
+            android:minHeight="25dp"
+            android:outlineProvider="background"
+            android:textColor="@android:color/black"
+            android:layout_gravity="top"
+            android:gravity="fill_horizontal|top"
+            android:textStyle="bold"
+            android:text="TBD"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:background="#f4f4f4" >
+
+            <ExpandableListView
+                android:id="@+id/expandableList"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
+</ScrollView>

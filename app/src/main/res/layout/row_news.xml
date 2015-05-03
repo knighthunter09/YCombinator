@@ -8,16 +8,71 @@
     android:visibility="visible"
     android:theme="@style/Base.AlertDialog.AppCompat.Light"
     android:layoutMode="opticalBounds"
-    android:gravity="fill_horizontal|center_vertical|center">
+    android:gravity="fill_horizontal|center_vertical|center"
+    android:background="@android:color/holo_orange_dark">
 
-    <TextView
-        android:id="@+id/text_title"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:linksClickable="false"
+            android:minHeight="25dp"
+            android:outlineProvider="background"
+            android:textColor="@android:color/black"
+            android:layout_gravity="top"
+            android:gravity="fill_horizontal|top"
+            android:textStyle="bold"/>
+
+        <TextView
+        android:id="@+id/author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
         android:ellipsize="marquee"
         android:focusable="true"
         android:linksClickable="false"
         android:minHeight="25dp"
-        android:outlineProvider="background" />
+        android:layout_marginLeft="20dp"
+        android:outlineProvider="background"
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_gravity="top"
+        android:gravity="fill_horizontal|center_horizontal"
+        android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:linksClickable="false"
+            android:minHeight="25dp"
+            android:outlineProvider="background"
+            android:layout_marginLeft="20dp"
+            android:textColor="@android:color/holo_purple"
+            android:layout_gravity="top"
+            android:gravity="fill_horizontal|center_horizontal"
+            android:textStyle="italic"/>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:linksClickable="false"
+            android:minHeight="25dp"
+            android:outlineProvider="background"
+            android:layout_marginLeft="20dp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_gravity="top"
+            android:gravity="fill_horizontal|center_horizontal"
+            android:textStyle="italic"/>
+    </LinearLayout>
 </RelativeLayout>

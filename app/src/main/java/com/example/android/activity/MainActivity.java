@@ -46,6 +46,7 @@ public class MainActivity extends ActivityBase {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             SwipeRefreshLayoutBasicFragment fragment = new SwipeRefreshLayoutBasicFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);
+            transaction.addToBackStack(null);
             transaction.commit();
         }
     }

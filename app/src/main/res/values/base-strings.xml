@@ -16,5 +16,5 @@
 -->
 <resources>
     <string name="app_name">YCombinator</string>
-    <string name="app_name_title">YCombinator News Reader</string>
+    <string name="app_name_title">YCombinator News</string>
 </resources>

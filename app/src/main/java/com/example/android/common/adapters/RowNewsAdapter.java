@@ -5,18 +5,22 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.android.swiperefreshlayoutbasic.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class RowNewsAdapter extends BaseAdapter {
 
     Context mContext;
     LayoutInflater mInflater;
-    List<String> list;
+    List<JSONObject> list;
 
     public RowNewsAdapter(Context context, LayoutInflater inflater) {
         mContext = context;
@@ -31,7 +35,12 @@ public class RowNewsAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        return list.get(position);
+        try {
+            return list.get(position).getString("title");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
@@ -47,23 +56,44 @@ public class RowNewsAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.row_news, null);
             holder = new ViewHolder();
             holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
+            holder.author = (TextView) convertView.findViewById(R.id.author);
+            holder.score = (TextView) convertView.findViewById(R.id.score);
+            holder.time = (TextView) convertView.findViewById(R.id.time);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.titleTextView.setText(getItem(position));
+        try {
+            holder.titleTextView.setText(list.get(position).getString("title"));
+            holder.author.setText(list.get(position).getString("by"));
+            holder.score.setText(list.get(position).getString("score"));
+            Date time = new Date();
+            if (list.get(position).getString("time") != null
+                    && !list.get(position).getString("time").isEmpty()) {
+                time.setTime(Long.valueOf(list.get(position).getString("time")));
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(time);
+                holder.time.setText(cal.getTime().toString());
+            } else {
+                holder.time.setText("");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        };
 
         return convertView;
     }
 
     private static class ViewHolder {
         public TextView titleTextView;
+        public TextView author;
+        public TextView score;
+        public TextView time;
     }
 
-    public void updateData(List<String> list) {
+    public void updateData(List<JSONObject> list) {
         this.list = list;
-        notifyDataSetChanged();
     }
 }

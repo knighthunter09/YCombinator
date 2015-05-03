@@ -22,13 +22,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.android.common.adapters.RowNewsAdapter;
-import com.example.android.common.dummydata.Cheeses;
 import com.example.android.common.http.HttpClient_Volley;
 import com.example.android.swiperefreshlayoutbasic.R;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,20 +38,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SwipeRefreshLayoutBasicFragment extends Fragment {
+public class SwipeRefreshLayoutBasicFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private static final String LOG_TAG = SwipeRefreshLayoutBasicFragment.class.getSimpleName();
 
@@ -66,15 +67,18 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
 
     private JSONArray maxStory;
 
-    private List<String> storyTitle = new ArrayList<>();
+    private List<JSONObject> storyTitle = new ArrayList<>();
 
     private Map<String,JSONObject> contentMap = new HashMap<>();
+
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        progressDialog = new ProgressDialog(this.getActivity().getApplicationContext());
     }
 
     @Override
@@ -89,28 +93,40 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
                 R.color.swipe_color_3, R.color.swipe_color_4);
 
         mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setOnItemClickListener(this);
 
+        // Set the adapter between the ListView and its backing data.
+        mListAdapter = new RowNewsAdapter(
+                this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
+        mListView.setAdapter(mListAdapter);
         //queryForMaxItemId();
         //queryForTopStories();
-        initiateRefresh();
+        progressDialog.setMessage("Loading data...");
+        progressDialog.setCancelable(false);
         return view;
     }
+    // END_INCLUDE (inflate_view)
 
+    // BEGIN_INCLUDE (setup_views)
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mListAdapter = new RowNewsAdapter(
-                this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
+//        mListAdapter = new RowNewsAdapter(
+//                this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
 
         // Set the adapter between the ListView and its backing data.
-        mListView.setAdapter(mListAdapter);
+        //mListView.setAdapter(mListAdapter);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
+
                 initiateRefresh();
             }
         });
+        initiateRefresh();
+
     }
 
     @Override
@@ -122,12 +138,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
+                Log.i(LOG_TAG, "Refresh menu item selected");
 
                 // We make sure that the SwipeRefreshLayout is displaying it's refreshing indicator
                 if (!mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
                 }
 
+                // Start our refresh background task
                 initiateRefresh();
 
                 return true;
@@ -137,21 +155,34 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
     }
 
     private void initiateRefresh() {
-        new BackgroundTask().execute();
+        Log.i(LOG_TAG, "initiateRefresh");
+        if (this.isVisible()) {
+            progressDialog.show();
+        }
+        queryForTopStories();
+        //new BackgroundTask().execute();
     }
 
-    private void onRefreshComplete(List<String> result) {
+    private void onRefreshComplete(List<JSONObject> result) {
+        Log.i(LOG_TAG, "onRefreshComplete" + " :: " + result.toString());
+
         mListAdapter.updateData(result);
+        mListAdapter.notifyDataSetChanged();
+
+        // Stop the refreshing indicator
         mSwipeRefreshLayout.setRefreshing(false);
+        progressDialog.dismiss();
     }
 
     private void queryForMaxItemId() {
+        Log.d(LOG_TAG,"QUERYING FOR MAX ID ");
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/maxitem.json",
                         null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d(LOG_TAG, "MAX ID *** " + response.toString());
                     }
                 }, new Response.ErrorListener() {
 
@@ -166,6 +197,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
     }
 
     private void queryForIndividualStories(String id,final int reqCall) {
+        Log.d(LOG_TAG,"QUERYING FOR INDIVIDUAL STORIES " + id + " :: " + reqCall);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
                         null, new Response.Listener<JSONObject>() {
@@ -173,20 +205,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(LOG_TAG, response.toString());
-                        try {
-                            storyTitle.add(response.getString("title"));
-                            contentMap.put(response.getString("id"), response);
+                            storyTitle.add(response);
+                            contentMap.put(String.valueOf(reqCall), response);
 
                             Log.d(LOG_TAG,storyTitle.toString());
 
                             if (reqCall == 9) {
                                 onRefreshComplete(storyTitle);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                            Log.e(LOG_TAG,e.getMessage());
-                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -202,6 +228,10 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
     }
 
     private void queryForTopStories() {
+        //Log.d(LOG_TAG,"QUERYING FOR TOP STORIES ");
+        if (!mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 ("https://hacker-news.firebaseio.com/v0/topstories.json",new Response.Listener<JSONArray>(){
 
@@ -226,12 +256,63 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
                 addToRequestQueue(jsObjRequest);
     }
 
-    private class BackgroundTask extends AsyncTask<Void, Void, List<String>> {
+    /**
+     * Callback method to be invoked when an item in this AdapterView has
+     * been clicked.
+     * <p/>
+     * Implementers can call getItemAtPosition(position) if they need
+     * to access the data associated with the selected item.
+     *
+     * @param parent   The AdapterView where the click happened.
+     * @param view     The view within the AdapterView that was clicked (this
+     *                 will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id       The row id of the item that was clicked.
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(LOG_TAG,"Initiating");
+        FragmentTransaction transaction = this.getActivity().getSupportFragmentManager().beginTransaction();
+        DetailsFragment fragment = new DetailsFragment();
+        transaction.replace(R.id.sample_content_fragment, fragment);
+        Bundle args = new Bundle();
+        try {
+            Log.d(LOG_TAG, position + " P>>>M " + contentMap + " >> ID : " + contentMap.get(String.valueOf(position)).getInt("id"));
+            args.putInt("request_obj", contentMap.get(String.valueOf(position)).getInt("id"));
+            args.putIntegerArrayList("request_obj_kids",
+                    getArrayOfKids(contentMap.get(String.valueOf(position)).getJSONArray("kids")));
+
+            fragment.setArguments(args);
+            fragment.setProp(String.valueOf(contentMap.get(String.valueOf(position)).getInt("id")),args);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        };
+        transaction.addToBackStack(String.valueOf(R.id.swiperefresh));
+        transaction.commit();
+    }
+
+    private ArrayList<Integer> getArrayOfKids(JSONArray kids) {
+        List<Integer> intList = new ArrayList<>();
+        if (kids != null && kids.length() > 0) {
+            for (int i = 0; i < kids.length(); i++) {
+                try {
+                    intList.add(kids.getInt(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Log.d(LOG_TAG, "Returning kids " + intList);
+        return (ArrayList<Integer>) intList;
+    }
+
+    private class BackgroundTask extends AsyncTask<Void, Void, List<JSONObject>> {
 
         static final int TASK_DURATION = 3 * 1000; // 3 seconds
 
         @Override
-        protected List<String> doInBackground(Void... params) {
+        protected List<JSONObject> doInBackground(Void... params) {
+            // Sleep for a small amount of time to simulate a background-task
             try {
                 Thread.sleep(TASK_DURATION);
             } catch (InterruptedException e) {
@@ -243,8 +324,11 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<String> result) {
+        protected void onPostExecute(List<JSONObject> result) {
             super.onPostExecute(result);
+
+            // Tell the Fragment that the refresh has completed
+            //onRefreshComplete(result);
         }
 
     }
