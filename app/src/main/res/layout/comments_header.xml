@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <TextView
-        android:id="@+id/commentAuthor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/groupName"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@android:color/holo_red_light"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/commentAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_marginRight="2dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="10dp"/>
+
+        <TextView
+            android:id="@+id/timeofcomment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:layout_toEndOf="@id/commentAuthor" />
+        android:background="@android:color/holo_orange_light"
+        android:orientation="horizontal">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/groupName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="8dp"
+            android:textStyle="italic"/>
+    </LinearLayout>
+
+</LinearLayout>

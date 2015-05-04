@@ -89,7 +89,7 @@ public class DetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void queryForIndividualComments(final String id,final int count) {
+    private void queryForIndividualComments(final String id,final int count,final int totalSize) {
         Log.d(LOG_TAG,"QUERYING FOR INDIVIDUAL COMMENTS " + id);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
@@ -98,8 +98,14 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(LOG_TAG, response.toString());
-                        commentsTitle.add(response);
+                        DetailsFragment.this.commentsTitle.add(response);
                         //contentCommentsMap.put(id, response);
+                        Log.d(LOG_TAG, DetailsFragment.this.commentsTitle.toString());
+
+                        if (count == totalSize-1) {
+                            Log.d(LOG_TAG, "Updating comments for size " + DetailsFragment.this.commentsTitle.size());
+                            mListAdapter.updateData(DetailsFragment.this.commentsTitle);
+                        }
                         try {
                             if (response.has("kids") && response.getJSONArray("kids") != null
                                     && response.getJSONArray("kids").length() > 0) {
@@ -109,12 +115,7 @@ public class DetailsFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d(LOG_TAG, commentsTitle.toString());
 
-                        if (count == 9) {
-                            Log.d(LOG_TAG, "Updating comments for size " + commentsTitle.size());
-                            mListAdapter.updateData(commentsTitle);
-                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -138,13 +139,13 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
-                            Log.d(LOG_TAG, "Content Reply Map after id : " + id  + " is " + contentCommentsReplyMap);
+                            DetailsFragment.this.contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
+                            Log.d(LOG_TAG, "Content Reply Map after id : " + id  + " is " + DetailsFragment.this.contentCommentsReplyMap);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         Log.d(LOG_TAG, response.toString());
-                        Log.d(LOG_TAG, contentCommentsReplyMap.toString());
+                        Log.d(LOG_TAG, DetailsFragment.this.contentCommentsReplyMap.toString());
                     }
                 }, new Response.ErrorListener() {
 
@@ -175,15 +176,16 @@ public class DetailsFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d(LOG_TAG,"Query" + propMap);
+            Log.d(LOG_TAG,"Query" + DetailsFragment.this.propMap);
             if (DetailsFragment.this.propMap != null
                     && !DetailsFragment.this.propMap.isEmpty()
                         && DetailsFragment.this.propMap.size() == 1) {
-                for(String key : propMap.keySet()) {
-                    ArrayList<Integer> commentIds = propMap.get(key).getIntegerArrayList("request_obj_kids");
+                for(String key : DetailsFragment.this.propMap.keySet()) {
+                    ArrayList<Integer> commentIds = DetailsFragment.this.propMap.get(key)
+                            .getIntegerArrayList("request_obj_kids");
                     int i = 0;
                     for (int id : commentIds) {
-                        queryForIndividualComments(String.valueOf(id),i);
+                        queryForIndividualComments(String.valueOf(id),i,commentIds.size());
                         i++;
                         if (i == 10) {
                             break;
