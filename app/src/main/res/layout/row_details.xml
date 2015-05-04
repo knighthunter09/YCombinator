@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/row_details">
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="75dp"
@@ -13,7 +14,7 @@
     android:theme="@style/Base.AlertDialog.AppCompat.Light"
     android:layoutMode="opticalBounds"
     android:gravity="fill_horizontal|center_vertical|center"
-    android:background="@android:color/holo_red_light">
+    android:background="@android:color/holo_blue_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +24,6 @@
             android:id="@+id/details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:ellipsize="marquee"
             android:focusable="true"
             android:linksClickable="false"
@@ -32,19 +32,20 @@
             android:textColor="@android:color/black"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|top"
-            android:textStyle="bold"
-            android:text="TBD"/>
+            android:textStyle="italic"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:background="#f4f4f4" >
+            android:background="@android:color/holo_green_dark">
 
-            <ExpandableListView
-                android:id="@+id/expandableList"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"/>
+            <ListView
+                android:id="@+id/listViewComments"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"/>
 
         </LinearLayout>
     </LinearLayout>

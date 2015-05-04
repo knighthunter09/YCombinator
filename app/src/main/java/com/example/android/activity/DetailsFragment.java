@@ -10,16 +10,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.android.common.adapters.ExpandableListAdapter;
+import com.example.android.common.adapters.CommentsAdapter;
 import com.example.android.common.http.HttpClient_Volley;
 import com.example.android.swiperefreshlayoutbasic.R;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,31 +35,32 @@ public class DetailsFragment extends Fragment {
 
     private List<JSONObject> commentsTitle = new ArrayList<>();
 
-    private Map<String,JSONObject> contentCommentsMap = new HashMap<>();
-
     private Map<String,JSONObject> contentCommentsReplyMap = new HashMap<>();
 
     private Map<String,Bundle> propMap = new HashMap<>();
 
-    //Expandable Lists details
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader = new ArrayList<>();
-    HashMap<String, List<String>> listDataChild = new HashMap<>();
+    private CommentsAdapter mListAdapter;
+    private ListView mListView;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(false);
-        Log.d(LOG_TAG, "Details View Created1" + propMap);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(LOG_TAG,"Details View Created2" + propMap);
         View view = inflater.inflate(R.layout.row_details, container, false);
+        ((TextView)view.findViewById(R.id.details)).setText("Comments on post by '"
+                + (propMap.get(propMap.keySet().iterator().next()).getString("author")) + "'");
+        mListView = (ListView) view.findViewById(R.id.listViewComments);
+
+        mListAdapter = new CommentsAdapter(
+                this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
+        mListView.setAdapter(mListAdapter);
+
         return view;
     }
 
@@ -66,24 +69,8 @@ public class DetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d(LOG_TAG,"Details View Created3" + propMap);
 
-        //Prepare comments list
-        // get the listview
-        expListView = (ExpandableListView) view.findViewById(R.id.expandableList);
-
-        // preparing list data
-        prepareListData();
-
-        listAdapter = new ExpandableListAdapter(this.getActivity().getApplicationContext(),
-                listDataHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-
         new BackgroundTask().execute();
 
-    }
-
-    private void prepareListData() {
     }
 
     @Override
@@ -102,7 +89,7 @@ public class DetailsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void queryForIndividualComments(final String id) {
+    private void queryForIndividualComments(final String id,final int count) {
         Log.d(LOG_TAG,"QUERYING FOR INDIVIDUAL COMMENTS " + id);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
@@ -112,9 +99,22 @@ public class DetailsFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Log.d(LOG_TAG, response.toString());
                         commentsTitle.add(response);
-                        contentCommentsMap.put(id, response);
-                        queryForIndividualCommentsReply(id);
+                        //contentCommentsMap.put(id, response);
+                        try {
+                            if (response.has("kids") && response.getJSONArray("kids") != null
+                                    && response.getJSONArray("kids").length() > 0) {
+                                queryForIndividualCommentsReply(
+                                        String.valueOf(response.getJSONArray("kids").getInt(0)));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         Log.d(LOG_TAG, commentsTitle.toString());
+
+                        if (count == 9) {
+                            Log.d(LOG_TAG, "Updating comments for size " + commentsTitle.size());
+                            mListAdapter.updateData(commentsTitle);
+                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -137,10 +137,14 @@ public class DetailsFragment extends Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        try {
+                            contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
+                            Log.d(LOG_TAG, "Content Reply Map after id : " + id  + " is " + contentCommentsReplyMap);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         Log.d(LOG_TAG, response.toString());
-                        contentCommentsReplyMap.put(id, response);
-
-                        Log.d(LOG_TAG, commentsTitle.toString());
+                        Log.d(LOG_TAG, contentCommentsReplyMap.toString());
                     }
                 }, new Response.ErrorListener() {
 
@@ -166,18 +170,20 @@ public class DetailsFragment extends Fragment {
         @Override
         protected List<JSONObject> doInBackground(Void... params) {
             try {
+                Log.d(LOG_TAG,"Background Task");
                 Thread.sleep(TASK_DURATION);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            Log.d(LOG_TAG,"Query" + propMap);
             if (DetailsFragment.this.propMap != null
-                    && DetailsFragment.this.propMap.isEmpty()
+                    && !DetailsFragment.this.propMap.isEmpty()
                         && DetailsFragment.this.propMap.size() == 1) {
                 for(String key : propMap.keySet()) {
                     ArrayList<Integer> commentIds = propMap.get(key).getIntegerArrayList("request_obj_kids");
                     int i = 0;
                     for (int id : commentIds) {
-                        queryForIndividualComments(String.valueOf(id));
+                        queryForIndividualComments(String.valueOf(id),i);
                         i++;
                         if (i == 10) {
                             break;
@@ -191,6 +197,7 @@ public class DetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(List<JSONObject> result) {
             super.onPostExecute(result);
+
         }
 
     }

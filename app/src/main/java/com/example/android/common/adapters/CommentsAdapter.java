@@ -1,28 +1,27 @@
 package com.example.android.common.adapters;
 
-import android.widget.BaseAdapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.example.android.swiperefreshlayoutbasic.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-public class RowNewsAdapter extends BaseAdapter {
+public class CommentsAdapter  extends BaseAdapter {
 
     Context mContext;
     LayoutInflater mInflater;
     List<JSONObject> list;
 
-    public RowNewsAdapter(Context context, LayoutInflater inflater) {
+    public CommentsAdapter(Context context, LayoutInflater inflater) {
         mContext = context;
         mInflater = inflater;
         list = new ArrayList<>();
@@ -36,7 +35,7 @@ public class RowNewsAdapter extends BaseAdapter {
     @Override
     public String getItem(int position) {
         try {
-            return list.get(position).getString("title");
+            return list.get(position).getString("text");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -53,32 +52,18 @@ public class RowNewsAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.row_news, null);
+            convertView = mInflater.inflate(R.layout.comments_header, null);
             holder = new ViewHolder();
-            holder.titleTextView = (TextView) convertView.findViewById(R.id.text_title);
-            holder.author = (TextView) convertView.findViewById(R.id.author);
-            holder.score = (TextView) convertView.findViewById(R.id.score);
-            holder.time = (TextView) convertView.findViewById(R.id.time);
-
+            holder.commentTextView = (TextView) convertView.findViewById(R.id.groupName);
+            holder.commentAuthorView = (TextView) convertView.findViewById(R.id.commentAuthor);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         try {
-            holder.titleTextView.setText(list.get(position).getString("title"));
-            holder.author.setText(list.get(position).getString("by"));
-            holder.score.setText(list.get(position).getString("score"));
-            Date time = new Date();
-            if (list.get(position).getString("time") != null
-                    && !list.get(position).getString("time").isEmpty()) {
-                time.setTime(Long.valueOf(list.get(position).getString("time")));
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(time);
-                holder.time.setText(cal.getTime().toString());
-            } else {
-                holder.time.setText("");
-            }
+            holder.commentTextView.setText(list.get(position).getString("text"));
+            holder.commentAuthorView.setText(list.get(position).getString("by"));
         } catch (JSONException e) {
             e.printStackTrace();
         };
@@ -87,10 +72,8 @@ public class RowNewsAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        public TextView titleTextView;
-        public TextView author;
-        public TextView score;
-        public TextView time;
+        public TextView commentTextView;
+        public TextView commentAuthorView;
     }
 
     public void updateData(List<JSONObject> list) {
