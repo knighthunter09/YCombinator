@@ -41,7 +41,7 @@
             android:background="@android:color/holo_green_dark">
 
             <ListView
-                android:id="@+id/listViewComments"
+                android:id="@android:id/list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="2dp"

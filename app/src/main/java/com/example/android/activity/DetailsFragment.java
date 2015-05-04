@@ -55,7 +55,7 @@ public class DetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.row_details, container, false);
         ((TextView)view.findViewById(R.id.details)).setText("Comments on post by '"
                 + (propMap.get(propMap.keySet().iterator().next()).getString("author")) + "'");
-        mListView = (ListView) view.findViewById(R.id.listViewComments);
+        mListView = (ListView) view.findViewById(android.R.id.list);
 
         mListAdapter = new CommentsAdapter(
                 this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
