@@ -9,6 +9,8 @@ import com.example.android.common.adapters.RowNewsAdapter;
 import com.example.android.common.http.HttpClient_Volley;
 import com.example.android.swiperefreshlayoutbasic.R;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -115,10 +117,14 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
                 if (!mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
                 }
-
                 // Start our refresh background task
                 initiateRefresh();
-
+                return true;
+            case R.id.menu_openinbrowser:
+                String url = "https://news.ycombinator.com";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 return true;
         }
 
@@ -210,19 +216,25 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        FragmentTransaction transaction = this.getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = this.getActivity()
+                .getSupportFragmentManager().beginTransaction();
         DetailsFragment fragment = new DetailsFragment();
         transaction.replace(R.id.sample_content_fragment, fragment);
         Bundle args = new Bundle();
         try {
-            args.putInt("request_obj", contentMap.get(String.valueOf(position)).getInt("id"));
-            args.putIntegerArrayList("request_obj_kids",
-                    getArrayOfKids(contentMap.get(String.valueOf(position)).getJSONArray("kids")));
+            if (contentMap.get(String.valueOf(position)) != null) {
+                args.putInt("request_obj", contentMap.get(String.valueOf(position)).getInt("id"));
+                args.putIntegerArrayList("request_obj_kids",
+                        getArrayOfKids(contentMap.get(String.valueOf(position))
+                                .getJSONArray("kids")));
 
-            args.putString("author", contentMap.get(String.valueOf(position)).has("by") ? contentMap.get(String.valueOf(position)).getString("by") : "");
+                args.putString("author", contentMap.get(String.valueOf(position)).has("by")
+                        ? contentMap.get(String.valueOf(position)).getString("by") : "");
 
+                fragment.setProp(String.valueOf(contentMap.get(String.valueOf(position))
+                        .getInt("id")),args);
+            }
             fragment.setArguments(args);
-            fragment.setProp(String.valueOf(contentMap.get(String.valueOf(position)).getInt("id")),args);
         } catch (JSONException e) {
             e.printStackTrace();
         };

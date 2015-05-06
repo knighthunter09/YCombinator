@@ -102,18 +102,18 @@ public class DetailsFragment extends Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(LOG_TAG, response.toString());
                         DetailsFragment.this.commentsTitle.add(response);
-
-                        if (count == totalSize-1) {
-                            mListAdapter.updateData(DetailsFragment.this.commentsTitle);
-                            progressBar.setVisibility(View.GONE);
-                        }
+                        // Perform below operation in the next method
+                        //                        if (count == totalSize-1) {
+                        //                            mListAdapter.updateData(DetailsFragment.this.commentsTitle);
+                        //                            progressBar.setVisibility(View.GONE);
+                        //                        }
                         try {
                             if (response.has("kids") && response.getJSONArray("kids") != null
                                     && response.getJSONArray("kids").length() > 0) {
                                 queryForIndividualCommentsReply(
-                                        String.valueOf(response.getJSONArray("kids").getInt(0)));
+                                        String.valueOf(response.getJSONArray("kids").getInt(0)),
+                                            (count == totalSize-1));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -133,7 +133,7 @@ public class DetailsFragment extends Fragment {
     }
 
 
-    private void queryForIndividualCommentsReply(final String id) {
+    private void queryForIndividualCommentsReply(final String id, final boolean updateAdapter) {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
                         null, new Response.Listener<JSONObject>() {
@@ -141,8 +141,14 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                                Log.d(LOG_TAG, "Parent ID: " + id + " Query for reply : " + response.toString());
-                                DetailsFragment.this.contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
+                                DetailsFragment.this.contentCommentsReplyMap.put(
+                                        String.valueOf(response.getInt("parent")), response);
+
+                                if (updateAdapter) {
+                                        mListAdapter.updateData(DetailsFragment.this.commentsTitle,
+                                                DetailsFragment.this.contentCommentsReplyMap);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
                             } catch (JSONException e) {
                             e.printStackTrace();
                         }
