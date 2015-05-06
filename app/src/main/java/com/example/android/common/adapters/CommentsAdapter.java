@@ -1,6 +1,7 @@
 package com.example.android.common.adapters;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,17 +66,27 @@ public class CommentsAdapter  extends BaseAdapter {
         }
 
         try {
-            holder.commentTextView.setText(list.get(position).getString("text"));
-            holder.commentAuthorView.setText(list.get(position).getString("by"));
-            Date time = new Date();
-            if (list.get(position).getString("time") != null
-                    && !list.get(position).getString("time").isEmpty()) {
-                time.setTime(Long.valueOf(list.get(position).getString("time")));
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(time);
-                holder.time.setText(cal.getTime().toString());
-            } else {
-                holder.time.setText("");
+            if (list.get(position) != null) {
+                if (list.get(position).has("text")) {
+                    holder.commentTextView.setText(Html.fromHtml(list.get(position)
+                            .getString("text")).toString());
+                }
+                if (list.get(position).has("by")){
+                    holder.commentAuthorView.setText( (position +1) + ". " + list.get(position)
+                            .getString("by"));
+                }
+                if (list.get(position).has("time")) {
+                    Date time = new Date();
+                    if (list.get(position).getString("time") != null
+                            && !list.get(position).getString("time").isEmpty()) {
+                        time.setTime(Long.valueOf(list.get(position).getString("time")));
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(time);
+                        holder.time.setText(cal.getTime().toString());
+                    } else {
+                        holder.time.setText(String.valueOf(list.get(position).has("time")));
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

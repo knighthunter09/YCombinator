@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         android:progressBackgroundTint="@color/abc_primary_text_material_light"
         android:id="@+id/progressBar"
-        android:layout_gravity="center|top"
+        style="@android:style/Widget.Holo.ProgressBar.Small.Title"
         />
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -40,6 +41,9 @@ public class DetailsFragment extends Fragment {
     private Map<String,Bundle> propMap = new HashMap<>();
 
     private CommentsAdapter mListAdapter;
+
+    private ProgressBar progressBar;
+
     private ListView mListView;
 
 
@@ -61,14 +65,16 @@ public class DetailsFragment extends Fragment {
                 this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
         mListView.setAdapter(mListAdapter);
 
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar1);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(LOG_TAG,"Details View Created3" + propMap);
 
+        progressBar.setVisibility(View.VISIBLE);
         new BackgroundTask().execute();
 
     }
@@ -90,7 +96,6 @@ public class DetailsFragment extends Fragment {
     }
 
     private void queryForIndividualComments(final String id,final int count,final int totalSize) {
-        Log.d(LOG_TAG,"QUERYING FOR INDIVIDUAL COMMENTS " + id);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
                         null, new Response.Listener<JSONObject>() {
@@ -99,12 +104,10 @@ public class DetailsFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Log.d(LOG_TAG, response.toString());
                         DetailsFragment.this.commentsTitle.add(response);
-                        //contentCommentsMap.put(id, response);
-                        Log.d(LOG_TAG, DetailsFragment.this.commentsTitle.toString());
 
                         if (count == totalSize-1) {
-                            Log.d(LOG_TAG, "Updating comments for size " + DetailsFragment.this.commentsTitle.size());
                             mListAdapter.updateData(DetailsFragment.this.commentsTitle);
+                            progressBar.setVisibility(View.GONE);
                         }
                         try {
                             if (response.has("kids") && response.getJSONArray("kids") != null
@@ -131,7 +134,6 @@ public class DetailsFragment extends Fragment {
 
 
     private void queryForIndividualCommentsReply(final String id) {
-        Log.d(LOG_TAG,"QUERYING FOR INDIVIDUAL COMMENTS REPLY " + id);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
                         null, new Response.Listener<JSONObject>() {
@@ -139,13 +141,11 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            DetailsFragment.this.contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
-                            Log.d(LOG_TAG, "Content Reply Map after id : " + id  + " is " + DetailsFragment.this.contentCommentsReplyMap);
-                        } catch (JSONException e) {
+                                Log.d(LOG_TAG, "Parent ID: " + id + " Query for reply : " + response.toString());
+                                DetailsFragment.this.contentCommentsReplyMap.put(String.valueOf(response.getInt("parent")), response);
+                            } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d(LOG_TAG, response.toString());
-                        Log.d(LOG_TAG, DetailsFragment.this.contentCommentsReplyMap.toString());
                     }
                 }, new Response.ErrorListener() {
 
@@ -171,12 +171,10 @@ public class DetailsFragment extends Fragment {
         @Override
         protected List<JSONObject> doInBackground(Void... params) {
             try {
-                Log.d(LOG_TAG,"Background Task");
                 Thread.sleep(TASK_DURATION);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d(LOG_TAG,"Query" + DetailsFragment.this.propMap);
             if (DetailsFragment.this.propMap != null
                     && !DetailsFragment.this.propMap.isEmpty()
                         && DetailsFragment.this.propMap.size() == 1) {

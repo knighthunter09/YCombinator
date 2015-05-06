@@ -66,18 +66,20 @@ public class RowNewsAdapter extends BaseAdapter {
         }
 
         try {
-            holder.titleTextView.setText(list.get(position).getString("title"));
-            holder.author.setText(list.get(position).getString("by"));
-            holder.score.setText(list.get(position).getString("score"));
-            Date time = new Date();
-            if (list.get(position).getString("time") != null
-                    && !list.get(position).getString("time").isEmpty()) {
-                time.setTime(Long.valueOf(list.get(position).getString("time")));
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(time);
-                holder.time.setText(cal.getTime().toString());
-            } else {
-                holder.time.setText("");
+            if (list.get(position) != null) {
+                holder.titleTextView.setText(list.get(position).getString("title"));
+                holder.author.setText(list.get(position).getString("by"));
+                holder.score.setText(list.get(position).getString("score"));
+                Date time = new Date();
+                if (list.get(position).getString("time") != null
+                        && !list.get(position).getString("time").isEmpty()) {
+                    time.setTime(Long.valueOf(list.get(position).getString("time")));
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(time);
+                    holder.time.setText(cal.getTime().toString());
+                } else {
+                    holder.time.setText("");
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

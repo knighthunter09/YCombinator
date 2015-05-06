@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/row_details"
-    android:background="@android:color/holo_blue_dark">
-
-<RelativeLayout
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:transitionGroup="false"
-    android:touchscreenBlocksFocus="true"
-    android:visibility="visible"
-    android:theme="@style/Base.AlertDialog.AppCompat.Light"
-    android:layoutMode="opticalBounds"
-    android:gravity="fill_horizontal|center_vertical|center">
+    android:layout_height="match_parent"
+    android:id="@+id/row_details"
+    android:background="@android:color/holo_orange_light"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,17 +20,16 @@
             android:focusable="true"
             android:linksClickable="false"
             android:minHeight="40dp"
-            android:outlineProvider="background"
             android:textColor="@android:color/black"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|top"
             android:textStyle="italic"/>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="@android:color/holo_green_dark">
+        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical"-->
+            <!--android:background="@android:color/holo_green_dark">-->
 
             <ListView
                 android:id="@android:id/list"
@@ -47,7 +38,13 @@
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"/>
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:progressBackgroundTint="@color/abc_primary_text_material_light"
+            android:id="@+id/progressBar1"
+            android:layout_gravity="center|top"/>
     </LinearLayout>
-</RelativeLayout>
-</ScrollView>
+</LinearLayout>

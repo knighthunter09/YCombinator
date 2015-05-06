@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,8 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     private Map<String,JSONObject> contentMap = new HashMap<>();
 
+    private ProgressBar progressBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +71,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         mSwipeRefreshLayout.setColorScheme(
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
-
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setOnItemClickListener(this);
 
@@ -77,8 +80,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
                 this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
         mListView.setAdapter(mListAdapter);
 
-        //queryForMaxItemId();
-        //queryForTopStories();
         return view;
     }
 
@@ -89,7 +90,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d(LOG_TAG, "onRefresh called from SwipeRefreshLayout");
                 if (!mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
                 }
@@ -97,6 +97,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
             }
         });
         //initiateRefresh();
+        progressBar.setVisibility(View.VISIBLE);
         new BackgroundTask().execute();
 
     }
@@ -110,9 +111,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
-                //Log.i(LOG_TAG, "Refresh menu item selected");
 
-                // We make sure that the SwipeRefreshLayout is displaying it's refreshing indicator
                 if (!mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
                 }
@@ -127,18 +126,17 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
     }
 
     private void initiateRefresh() {
+        progressBar.setVisibility(View.GONE);
         queryForTopStories();
     }
 
     private void onRefreshComplete(List<JSONObject> result) {
-
+        progressBar.setVisibility(View.GONE);
         mListAdapter.updateData(result);
-
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void queryForMaxItemId() {
-       // Log.d(LOG_TAG,"QUERYING FOR MAX ID ");
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/maxitem.json",
                         null, new Response.Listener<JSONObject>() {
@@ -187,7 +185,6 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
     }
 
     private void queryForTopStories() {
-
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 ("https://hacker-news.firebaseio.com/v0/topstories.json",new Response.Listener<JSONArray>(){
 
@@ -213,13 +210,11 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //Log.d(LOG_TAG,"Initiating");
         FragmentTransaction transaction = this.getActivity().getSupportFragmentManager().beginTransaction();
         DetailsFragment fragment = new DetailsFragment();
         transaction.replace(R.id.sample_content_fragment, fragment);
         Bundle args = new Bundle();
         try {
-            Log.d(LOG_TAG, position + " P>>>M " + contentMap + " >> ID : " + contentMap.get(String.valueOf(position)).getInt("id"));
             args.putInt("request_obj", contentMap.get(String.valueOf(position)).getInt("id"));
             args.putIntegerArrayList("request_obj_kids",
                     getArrayOfKids(contentMap.get(String.valueOf(position)).getJSONArray("kids")));
