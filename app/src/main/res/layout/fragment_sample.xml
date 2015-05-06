@@ -32,12 +32,12 @@
         android:layout_marginTop="20dp"
         android:layout_weight="1"/>
 
-    <ProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:progressBackgroundTint="@color/abc_primary_text_material_light"
-        android:id="@+id/progressBar"
-        android:layout_gravity="center|top"
-        />
+    <!--<ProgressBar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:progressBackgroundTint="@color/abc_primary_text_material_light"-->
+        <!--android:id="@+id/progressBar"-->
+        <!--android:layout_gravity="center|top"-->
+        <!--/>-->
     </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

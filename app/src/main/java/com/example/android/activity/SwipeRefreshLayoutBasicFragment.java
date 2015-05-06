@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+//import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +54,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     private Map<String,JSONObject> contentMap = new HashMap<>();
 
-    private ProgressBar progressBar;
+    //private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         mSwipeRefreshLayout.setColorScheme(
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        //progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setOnItemClickListener(this);
 
@@ -99,7 +99,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
             }
         });
         //initiateRefresh();
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
         new BackgroundTask().execute();
 
     }
@@ -132,12 +132,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
     }
 
     private void initiateRefresh() {
-        progressBar.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.GONE);
         queryForTopStories();
     }
 
     private void onRefreshComplete(List<JSONObject> result) {
-        progressBar.setVisibility(View.GONE);
+        //progressBar.setVisibility(View.GONE);
         mListAdapter.updateData(result);
         mSwipeRefreshLayout.setRefreshing(false);
     }

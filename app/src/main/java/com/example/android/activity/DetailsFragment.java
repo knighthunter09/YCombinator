@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+//import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -42,7 +42,7 @@ public class DetailsFragment extends Fragment {
 
     private CommentsAdapter mListAdapter;
 
-    private ProgressBar progressBar;
+//    private ProgressBar progressBar;
 
     private ListView mListView;
 
@@ -65,7 +65,7 @@ public class DetailsFragment extends Fragment {
                 this.getActivity().getApplicationContext(),this.getLayoutInflater(null));
         mListView.setAdapter(mListAdapter);
 
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar1);
+//        progressBar = (ProgressBar)view.findViewById(R.id.progressBar1);
 
         return view;
     }
@@ -74,7 +74,7 @@ public class DetailsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
         new BackgroundTask().execute();
 
     }
@@ -147,7 +147,7 @@ public class DetailsFragment extends Fragment {
                                 if (updateAdapter) {
                                         mListAdapter.updateData(DetailsFragment.this.commentsTitle,
                                                 DetailsFragment.this.contentCommentsReplyMap);
-                                        progressBar.setVisibility(View.GONE);
+ //                                       progressBar.setVisibility(View.GONE);
                                     }
                             } catch (JSONException e) {
                             e.printStackTrace();
