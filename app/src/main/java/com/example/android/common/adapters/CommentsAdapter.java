@@ -2,6 +2,7 @@ package com.example.android.common.adapters;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,9 +95,13 @@ public class CommentsAdapter  extends BaseAdapter {
                 }
                 if (list.get(position).has("id")) {
                     JSONObject obj = this.map.get(String.valueOf(list.get(position).getInt("id")));
-                    holder.reply.setText((obj.has("by") ? obj.getString("by"): " Anonymous ")
-                            + " replied: " + (Html.fromHtml(obj.has("text")
+                    if (obj != null) {
+                        holder.reply.setText((obj.has("by") ? obj.getString("by"): " Anonymous ")
+                                + " replied: " + (Html.fromHtml(obj.has("text")
                                 ? obj.getString("text") : "" )));
+                    } else {
+                        holder.reply.setText("No replies yet !!");
+                    }
                 }
             }
         } catch (JSONException e) {
