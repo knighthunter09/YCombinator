@@ -71,7 +71,7 @@ public class CommentsAdapter  extends BaseAdapter {
         }
 
         try {
-            if (list.get(position) != null) {
+            if (list.get(position) != null && position < 10) {
                 if (list.get(position).has("text")) {
                     holder.commentTextView.setText(Html.fromHtml(list.get(position)
                             .getString("text")).toString());

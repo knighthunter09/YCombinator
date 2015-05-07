@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-//import android.widget.ProgressBar;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -114,7 +113,11 @@ public class DetailsFragment extends Fragment {
                                     && response.getJSONArray("kids").length() > 0) {
                                 queryForIndividualCommentsReply(
                                         String.valueOf(response.getJSONArray("kids").getInt(0)),
-                                            (count == totalSize-1));
+                                            (count == 9 || count == totalSize - 1));
+                            } else if (count == 9 || count == totalSize - 1) {
+                                DetailsFragment.this.progressBar.setVisibility(View.GONE);
+                                mListAdapter.updateData(DetailsFragment.this.commentsTitle,
+                                        DetailsFragment.this.contentCommentsReplyMap);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -142,6 +145,8 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                                if (response == null || !response.has("parent"))
+                                    return;
                                 DetailsFragment.this.contentCommentsReplyMap.put(
                                         String.valueOf(response.getInt("parent")), response);
 
@@ -200,6 +205,8 @@ public class DetailsFragment extends Fragment {
                         }
                     }
                 }
+            } else  {
+                DetailsFragment.this.progressBar.setVisibility(View.GONE);
             }
             return new ArrayList<>();
         }

@@ -27,7 +27,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-//import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +34,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     private JSONArray maxStory;
 
-    private List<JSONObject> storyTitle = new ArrayList<>();
+    private List<JSONObject> storyTitle = new LinkedList<>();
 
     private Map<String,JSONObject> contentMap = new HashMap<>();
 
@@ -180,7 +180,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
                 addToRequestQueue(jsObjRequest);
     }
 
-    private void queryForIndividualStories(String id,final int reqCall) {
+    private void queryForIndividualStories(final String id,final int reqCall) {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, "https://hacker-news.firebaseio.com/v0/item/" + id + ".json",
                         null, new Response.Listener<JSONObject>() {
@@ -188,7 +188,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
                     @Override
                     public void onResponse(JSONObject response) {
                             storyTitle.add(response);
-                            contentMap.put(String.valueOf(reqCall), response);
+                            contentMap.put(String.valueOf(storyTitle.indexOf(response)), response);
 
                             if (reqCall == 9) {
                                 onRefreshComplete(storyTitle);
@@ -239,14 +239,17 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         transaction.replace(R.id.sample_content_fragment, fragment);
         Bundle args = new Bundle();
         try {
-            if (contentMap.get(String.valueOf(position)) != null) {
+            if (contentMap.get(String.valueOf(position)) != null
+                    && (contentMap.get(String.valueOf(position)).has("id"))
+                        && (contentMap.get(String.valueOf(position)).has("by"))
+                    && (contentMap.get(String.valueOf(position)).has("kids"))) {
                 args.putInt("request_obj", contentMap.get(String.valueOf(position)).getInt("id"));
                 args.putIntegerArrayList("request_obj_kids",
                         getArrayOfKids(contentMap.get(String.valueOf(position))
                                 .getJSONArray("kids")));
 
-                args.putString("author", contentMap.get(String.valueOf(position)).has("by")
-                        ? contentMap.get(String.valueOf(position)).getString("by") : "");
+                args.putString("author", (contentMap.get(String.valueOf(position)).has("by")
+                        ? contentMap.get(String.valueOf(position)).getString("by") : ""));
 
                 fragment.setProp(String.valueOf(contentMap.get(String.valueOf(position))
                         .getInt("id")),args);
@@ -255,7 +258,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         } catch (JSONException e) {
             e.printStackTrace();
         };
-        transaction.addToBackStack(String.valueOf(R.id.swiperefresh));
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -265,6 +268,9 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
             for (int i = 0; i < kids.length(); i++) {
                 try {
                     intList.add(kids.getInt(i));
+                    if (i == 9) {
+                        break;
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
