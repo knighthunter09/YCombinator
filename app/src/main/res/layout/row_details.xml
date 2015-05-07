@@ -23,7 +23,8 @@
             android:textColor="@android:color/black"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|top"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:textSize="20sp"/>
 
         <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
             <!--android:layout_width="match_parent"-->

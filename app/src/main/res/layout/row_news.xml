@@ -28,7 +28,8 @@
             android:textColor="@android:color/black"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|top"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textSize="25sp" />
 
         <TextView
         android:id="@+id/author"
@@ -43,7 +44,8 @@
         android:textColor="@android:color/holo_red_dark"
         android:layout_gravity="top"
         android:gravity="fill_horizontal|center_horizontal"
-        android:textStyle="italic"/>
+        android:textStyle="italic"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/score"
@@ -58,7 +60,8 @@
             android:textColor="@android:color/holo_purple"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|center_horizontal"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/time"
@@ -73,6 +76,7 @@
             android:textColor="@android:color/holo_blue_dark"
             android:layout_gravity="top"
             android:gravity="fill_horizontal|center_horizontal"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:textSize="15sp"/>
     </LinearLayout>
 </RelativeLayout>
