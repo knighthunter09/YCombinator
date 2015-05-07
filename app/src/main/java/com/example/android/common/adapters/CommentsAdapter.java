@@ -14,6 +14,8 @@ import com.example.android.swiperefreshlayoutbasic.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -82,13 +84,14 @@ public class CommentsAdapter  extends BaseAdapter {
                             .getString("by"));
                 }
                 if (list.get(position).has("time")) {
-                    Date time = new Date();
+                    //Date time = new Date();
                     if (list.get(position).getString("time") != null
                             && !list.get(position).getString("time").isEmpty()) {
-                        time.setTime(Long.valueOf(list.get(position).getString("time")));
+                        //time.setTime(Long.valueOf(list.get(position).getString("time")));
+                        DateFormat df = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
                         Calendar cal = Calendar.getInstance();
-                        cal.setTime(time);
-                        holder.time.setText(cal.getTime().toString());
+                        cal.setTimeInMillis(Long.valueOf(list.get(position).getString("time"))* 1000L);
+                        holder.time.setText(df.format(cal.getTime()));
                     } else {
                         holder.time.setText(String.valueOf(list.get(position).has("time")));
                     }

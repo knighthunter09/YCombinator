@@ -23,10 +23,11 @@
             android:id="@+id/timeofcomment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom|start"
+            android:layout_gravity="bottom|right"
             android:textStyle="normal"
             android:textSize="12sp"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"
+            android:gravity="bottom" />
     </LinearLayout>
 
     <LinearLayout

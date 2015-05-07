@@ -32,7 +32,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name="com.example.android.activity.MainActivity"
-                  android:label="@string/app_name_title">
+                  android:label="@string/app_name_title" android:banner="@color/steel_blue">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

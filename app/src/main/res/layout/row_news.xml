@@ -1,82 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:transitionGroup="false"
-    android:touchscreenBlocksFocus="true"
-    android:visibility="visible"
-    android:theme="@style/Base.AlertDialog.AppCompat.Light"
-    android:layoutMode="opticalBounds"
+    android:background="@android:color/holo_orange_dark"
     android:gravity="fill_horizontal|center_vertical|center"
-    android:background="@android:color/holo_orange_dark">
+    android:layoutMode="opticalBounds"
+    android:theme="@style/Base.AlertDialog.AppCompat.Light"
+    android:touchscreenBlocksFocus="true"
+    android:transitionGroup="false"
+    android:visibility="visible">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:linksClickable="false"
-            android:minHeight="25dp"
-            android:outlineProvider="background"
-            android:textColor="@android:color/black"
-            android:layout_gravity="top"
-            android:gravity="fill_horizontal|top"
-            android:textStyle="bold"
-            android:textSize="25sp" />
+        card_view:cardCornerRadius="40dp"
+        card_view:cardElevation="@android:dimen/app_icon_size"
+        android:accessibilityLiveRegion="polite"
+        android:background="@color/link_text_material_light">
 
-        <TextView
-        android:id="@+id/author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:focusable="true"
-        android:linksClickable="false"
-        android:minHeight="25dp"
-        android:layout_marginLeft="20dp"
-        android:outlineProvider="background"
-        android:textColor="@android:color/holo_red_dark"
-        android:layout_gravity="top"
-        android:gravity="fill_horizontal|center_horizontal"
-        android:textStyle="italic"
-            android:textSize="15sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:linksClickable="false"
-            android:minHeight="25dp"
-            android:outlineProvider="background"
-            android:layout_marginLeft="20dp"
-            android:textColor="@android:color/holo_purple"
-            android:layout_gravity="top"
-            android:gravity="fill_horizontal|center_horizontal"
-            android:textStyle="italic"
-            android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:linksClickable="false"
-            android:minHeight="25dp"
-            android:outlineProvider="background"
-            android:layout_marginLeft="20dp"
-            android:textColor="@android:color/holo_blue_dark"
-            android:layout_gravity="top"
-            android:gravity="fill_horizontal|center_horizontal"
-            android:textStyle="italic"
-            android:textSize="15sp"/>
-    </LinearLayout>
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_margin="20dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="fill_horizontal|top"
+                android:linksClickable="false"
+                android:minHeight="25dp"
+                android:outlineProvider="background"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginLeft="20dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="bottom"
+                android:linksClickable="false"
+                android:minHeight="25dp"
+                android:outlineProvider="background"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginLeft="20dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="fill_horizontal|center_horizontal"
+                android:linksClickable="false"
+                android:minHeight="25dp"
+                android:outlineProvider="background"
+                android:textColor="@android:color/holo_purple"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginLeft="20dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="fill_horizontal|center_horizontal"
+                android:linksClickable="false"
+                android:minHeight="25dp"
+                android:outlineProvider="background"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </RelativeLayout>

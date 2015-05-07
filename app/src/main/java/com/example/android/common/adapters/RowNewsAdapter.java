@@ -11,6 +11,8 @@ import com.example.android.swiperefreshlayoutbasic.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -70,13 +72,14 @@ public class RowNewsAdapter extends BaseAdapter {
                 holder.titleTextView.setText(list.get(position).getString("title"));
                 holder.author.setText(list.get(position).getString("by"));
                 holder.score.setText(list.get(position).getString("score"));
-                Date time = new Date();
+                //Date time = new Date();
                 if (list.get(position).getString("time") != null
                         && !list.get(position).getString("time").isEmpty()) {
-                    time.setTime(Long.valueOf(list.get(position).getString("time")));
+                    //time.setTime(Long.valueOf(list.get(position).getString("time")));
+                    DateFormat df = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
                     Calendar cal = Calendar.getInstance();
-                    cal.setTime(time);
-                    holder.time.setText(cal.getTime().toString());
+                    cal.setTimeInMillis(Long.valueOf(list.get(position).getString("time")) * 1000L);
+                    holder.time.setText(df.format(cal.getTime()));
                 } else {
                     holder.time.setText("");
                 }
