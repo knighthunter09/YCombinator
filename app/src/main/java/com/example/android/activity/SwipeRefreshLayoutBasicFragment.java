@@ -23,8 +23,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 //import android.widget.ProgressBar;
 
 import org.json.JSONArray;
@@ -54,7 +56,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
 
     private Map<String,JSONObject> contentMap = new HashMap<>();
 
-    //private ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,8 +75,23 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
         mSwipeRefreshLayout.setColorScheme(
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
-        //progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
         mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                int topRowVerticalPosition =
+                        (mListView == null || mListView.getChildCount() == 0) ?
+                                0 : mListView.getChildAt(0).getTop();
+                mSwipeRefreshLayout.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+            }
+        });
         mListView.setOnItemClickListener(this);
 
         // Set the adapter between the ListView and its backing data.
@@ -99,7 +116,7 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
             }
         });
         //initiateRefresh();
-        //progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         new BackgroundTask().execute();
 
     }
@@ -132,12 +149,12 @@ public class SwipeRefreshLayoutBasicFragment extends Fragment implements Adapter
     }
 
     private void initiateRefresh() {
-        //progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         queryForTopStories();
     }
 
     private void onRefreshComplete(List<JSONObject> result) {
-        //progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         mListAdapter.updateData(result);
         mSwipeRefreshLayout.setRefreshing(false);
     }
