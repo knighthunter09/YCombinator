@@ -95,7 +95,7 @@ public class CommentsAdapter  extends BaseAdapter {
                 if (list.get(position).has("id")) {
                     JSONObject obj = this.map.get(String.valueOf(list.get(position).getInt("id")));
                     holder.reply.setText((obj.has("by") ? obj.getString("by"): " Anonymous ")
-                            + " replied " + (Html.fromHtml(obj.has("text")
+                            + " replied: " + (Html.fromHtml(obj.has("text")
                                 ? obj.getString("text") : "" )));
                 }
             }
